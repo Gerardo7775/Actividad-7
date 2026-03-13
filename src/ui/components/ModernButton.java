@@ -1,3 +1,5 @@
+package ui.components;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -13,7 +15,7 @@ public class ModernButton extends JButton {
     
     private boolean isHovered = false;
     private boolean isPressed = false;
-    private final int radius = 15; // Qué tan redondeadas queremos las esquinas
+    private final int radius = 15; // Qué tan redondeadas serán las esquinas
 
     public ModernButton(String text, Color normalColor, Color hoverColor, Color pressedColor) {
         super(text);
@@ -21,76 +23,70 @@ public class ModernButton extends JButton {
         this.hoverColor = hoverColor;
         this.pressedColor = pressedColor;
 
-        // Apagar el diseño nativo de Java/Windows
+        // Configuraciones básicas para apagar el dibujo nativo de Swing
         setContentAreaFilled(false);
         setFocusPainted(false);
         setBorderPainted(false);
         setOpaque(false);
         
-        // Estilo del texto
+        // Estilos del texto
         setForeground(Color.WHITE);
         setFont(new Font("Segoe UI", Font.BOLD, 14));
         setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Lógica para detectar el mouse y cambiar el estado
+        // Listeners para detectar cuando el mouse entra, sale o presiona
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                if (isEnabled()) {
-                    isHovered = true;
-                    repaint(); // Redibuja el botón con el nuevo color
-                }
+                isHovered = true;
+                repaint(); // Obliga a redibujar el botón
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 isHovered = false;
-                isPressed = false;
                 repaint();
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-                if (isEnabled()) {
-                    isPressed = true;
-                    repaint();
-                }
+                isPressed = true;
+                repaint();
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (isEnabled()) {
-                    isPressed = false;
-                    repaint();
-                }
+                isPressed = false;
+                repaint();
             }
         });
     }
 
-    // Aquí ocurre la magia visual
+    // Este es el método mágico donde definimos CÓMO se dibuja el botón
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
+        
+        // Activa el antialiasing para que los bordes redondeados se vean suaves y no pixelados
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // Elegir el color dependiendo de lo que esté haciendo el usuario
-        Color currentColor;
+        // Lógica de colores según el estado
         if (!isEnabled()) {
-            currentColor = disabledColor;
+            g2.setColor(disabledColor);
         } else if (isPressed) {
-            currentColor = pressedColor;
+            g2.setColor(pressedColor);
         } else if (isHovered) {
-            currentColor = hoverColor;
+            g2.setColor(hoverColor);
         } else {
-            currentColor = normalColor;
+            g2.setColor(normalColor);
         }
 
-        // Dibujar el fondo redondeado
-        g2.setColor(currentColor);
+        // Dibuja el fondo del rectángulo redondeado
         g2.fill(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), radius, radius));
+
         g2.dispose();
-        
-        // Llamar al super para que dibuje el texto blanco encima
+
+        // Llama a super.paintComponent para que dibuje el texto por encima
         super.paintComponent(g);
     }
 }

@@ -1,3 +1,10 @@
+package app;
+
+import models.*;
+import core.*;
+import ui.components.*;
+import ui.table.*;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;

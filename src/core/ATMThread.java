@@ -1,4 +1,7 @@
+package core;
+
 import java.util.Random;
+import models.BankAccount;
 
 public class ATMThread extends Thread {
     private final BankAccount account;

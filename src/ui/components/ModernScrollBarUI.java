@@ -1,3 +1,5 @@
+package ui.components;
+
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
@@ -20,7 +22,7 @@ public class ModernScrollBarUI extends BasicScrollBarUI {
         return createZeroButton();
     }
 
-    // Crea un botón invisible y sin tamaño
+    // Crea un botón invisible con tamaño 0x0
     private JButton createZeroButton() {
         JButton button = new JButton();
         button.setPreferredSize(new Dimension(0, 0));
@@ -29,17 +31,15 @@ public class ModernScrollBarUI extends BasicScrollBarUI {
         return button;
     }
 
-    // Dibuja el fondo por donde se desliza la barra (Track)
     @Override
     protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
+        // Fondo del canal por donde desliza la barra (Transparente para más limpieza)
         Graphics2D g2 = (Graphics2D) g.create();
-        // Usamos un color transparente o igual al fondo para que sea invisible
-        g2.setColor(new Color(248, 250, 252)); // Slate 50 (Color de fondo de tu panel)
+        g2.setColor(new Color(245, 246, 250)); // Mismo color de fondo de nuestra app
         g2.fillRect(trackBounds.x, trackBounds.y, trackBounds.width, trackBounds.height);
         g2.dispose();
     }
 
-    // Dibuja la barra que el usuario arrastra (Thumb)
     @Override
     protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {
         if (thumbBounds.isEmpty() || !scrollbar.isEnabled()) {
@@ -49,23 +49,22 @@ public class ModernScrollBarUI extends BasicScrollBarUI {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // Colores que cambian si le pasas el mouse o le das clic (efecto hover)
-        if (isDragging) {
-            g2.setColor(new Color(148, 163, 184)); // Slate 400 (Más oscuro)
-        } else if (isThumbRollover()) {
-            g2.setColor(new Color(203, 213, 225)); // Slate 300
+        // Elegir color según si el mouse está encima (hover) o presionando
+        if (isThumbRollover()) {
+            g2.setColor(new Color(148, 163, 184)); // Slate 400 (Hover)
         } else {
-            g2.setColor(new Color(226, 232, 240)); // Slate 200 (Reposo)
+            g2.setColor(new Color(203, 213, 225)); // Slate 300 (Normal)
         }
 
-        // Cálculos para centrar la píldora dentro del espacio de la barra
+        // Calcular la posición para centrar el pulgar (thumb) dentro del canal
         int x = thumbBounds.x + (thumbBounds.width - thumbWidth) / 2;
-        int y = thumbBounds.y + 2; // Margen superior
+        int y = thumbBounds.y + 2; // Pequeño margen
         int width = thumbWidth;
-        int height = thumbBounds.height - 4; // Margen inferior
+        int height = thumbBounds.height - 4; // Pequeño margen
 
-        // Dibujar el rectángulo completamente redondeado
+        // Dibujar el pulgar como un rectángulo muy redondeado (píldora)
         g2.fill(new RoundRectangle2D.Double(x, y, width, height, width, width));
+
         g2.dispose();
     }
 }

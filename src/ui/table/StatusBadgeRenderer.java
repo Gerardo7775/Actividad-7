@@ -1,3 +1,5 @@
+package ui.table;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
